@@ -1,12 +1,13 @@
 import sys, os
 sys.path.append(os.path.abspath(os.path.join('../../')))
-from qm9.property_prediction.models_property import EGNN, Naive, NumNodes
+from src.e3_diffusion.qm9.property_prediction.models_property import EGNN, Naive, NumNodes
 import torch
 from torch import nn, optim
 import argparse
-from qm9.property_prediction import prop_utils
+from src.e3_diffusion.qm9.property_prediction import prop_utils
 import json
-from qm9 import dataset, utils
+from src.e3_diffusion.qm9 import dataset
+from src.e3_diffusion.qm9 import utils
 import pickle
 
 loss_l1 = nn.L1Loss()

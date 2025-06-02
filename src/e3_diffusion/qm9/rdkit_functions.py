@@ -1,6 +1,6 @@
 from rdkit import Chem
 import numpy as np
-from qm9.bond_analyze import get_bond_order, geom_predictor
+from src.e3_diffusion.qm9.bond_analyze import get_bond_order, geom_predictor
 from . import dataset
 import torch
 from src.e3_diffusion.configs.datasets_config import get_dataset_info

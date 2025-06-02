@@ -3,7 +3,7 @@ import torch
 import torch.nn.functional as F
 from src.e3_diffusion.equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
     assert_correctly_masked
-from qm9.analyze import check_stability
+from src.e3_diffusion.qm9.analyze import check_stability
 
 
 def rotate_chain(z):

@@ -4,7 +4,7 @@ try:
 except ModuleNotFoundError:
     pass
 import copy
-import utils
+from scripts import utils
 import argparse
 import wandb
 from src.e3_diffusion.configs.datasets_config import get_dataset_info
@@ -17,7 +17,7 @@ import torch
 import time
 import pickle
 from src.e3_diffusion.qm9 import prepare_context, compute_mean_mad
-from train_test import train_epoch, test, analyze_and_save
+from scripts.train_test import train_epoch, test, analyze_and_save
 
 parser = argparse.ArgumentParser(description='E3Diffusion')
 parser.add_argument('--exp_name', type=str, default='debug_10')

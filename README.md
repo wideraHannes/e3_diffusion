@@ -1,84 +1,139 @@
-# EDM: E(3) Equivariant Diffusion Model for Molecule Generation in 3D.
+## Pocket Conditioned GeoLDM
 
-<img src="equivariant_diffusion/overview.png" width="400">
+integrate pocket information into geoldm in multiple steps (crossdock 2020 dataset).
+Dataset consists of pocket-ligand pairs.
+The end goal is to provide solely the pocket at inference time and the model shall output binding ligands.
+Read and optimize [Expose](https://pad.hhu.de/uhO1gxicS8S2RXKNxQmQkg?view)
 
-Official code release for the paper Equivariant Diffusion for Molecule Generation in 3D.
+1. using the conditional context slot already present
 
-**If** you want to set-up a rdkit environment, it may be easiest to install conda and run:
-``conda create -c conda-forge -n my-rdkit-env rdkit``
+   - encoding pocket with ESM-2 (loosing orientation?) -> pocket_enc
+   - passing pocket_enc into VAE & Diffusion as argument like they did in the og model with the properties
+   - open questions:
+     - Does this even work
+     - how to train the model
+     - does the VAE need to see the pocket?
+     - possibility to use pretrained one?
 
-and then install the other required packages from there. The code should still run without rdkit installed though.
+2. implement a more sophisticated solution
+   - Film Layer?
+   - crossattention?
+   - open questions:
+     - how to maintain Equivariance i have heard attention would pose a problem!
 
+### GeoLDM: Geometric Latent Diffusion Models for 3D Molecule Generation
 
-### Training the EDM:
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/MinkaiXu/GeoLDM/blob/main/LICENSE)
+[![ArXiv](http://img.shields.io/badge/cs.LG-arXiv%3A2305.01140-B31B1B.svg)](https://arxiv.org/abs/2305.01140)
 
-```python main_qm9.py --n_epochs 3000 --exp_name edm_qm9 --n_stability_samples 1000 --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --diffusion_steps 1000 --diffusion_loss_type l2 --batch_size 64 --nf 256 --n_layers 9 --lr 1e-4 --normalize_factors [1,4,10] --test_epochs 20 --ema_decay 0.9999```
+<!-- [[Code](https://github.com/MinkaiXu/GeoLDM)] -->
 
+![cover](src/geoldm/equivariant_diffusion/framework.png)
 
-A visualization of what happens during training:
+Official code release for the paper "Geometric Latent Diffusion Models for 3D Molecule Generation", accepted at _International Conference on Machine Learning, 2023_.
 
-<img src="equivariant_diffusion/training.png" width="400">
+### GeoLDM: background knowlege
 
+**GeoLDM**  
+Built on top of EGNN and EDM.
 
-### After training
+- Modified EGNN into a VAE  
+  → _"EGNN as VAE"_
 
-To analyze the sample quality of molecules
+- uses EDM as diffusion model
 
-```python eval_analyze.py --model_path outputs/edm_qm9 --n_samples 10_000```
+### [EGNN](https://arxiv.org/pdf/2102.09844)
 
-To visualize some molecules
+**Equivariant Graph Neural Networks**
 
-```python eval_sample.py --model_path outputs/edm_qm9 --n_samples 10_000```
+- Equivariant to: rotation, translation, reflection, permutation
+- No need for higher-order features
+- Efficient and performant
 
+---
 
+### [EDM](https://arxiv.org/pdf/2203.17003)
 
+**Equivariant Diffusion Model**
 
+- For 3D molecule generation
+- E(3)-equivariant network
+- Learns to denoise diffusion
+- Works on:
+  - Atom coordinates (continuous)
+  - Atom types (categorical)
 
-### For GEOM-Drugs
+## 🚀 Working with `uv`
 
-First follow the intructions at data/geom/README.md to set up the data.
+This project uses [`uv`](https://github.com/astral-sh/uv) for dependency management and virtual environments.
 
-Training
-```python main_geom_drugs.py --n_epochs 3000 --exp_name edm_geom_drugs --n_stability_samples 500 --diffusion_noise_schedule polynomial_2 --diffusion_steps 1000 --diffusion_noise_precision 1e-5 --diffusion_loss_type l2 --batch_size 64 --nf 256 --n_layers 4 --lr 1e-4 --normalize_factors [1,4,10] --test_epochs 1 --ema_decay 0.9999 --normalization_factor 1 --model egnn_dynamics --visualize_every_batch 10000```
+### 🛠 1. Sync Environment
 
+Install all dependencies and create the virtual environment:
 
-Analyze
+```bash
+uv sync
+```
 
-```python eval_analyze.py --model_path outputs/edm_geom_drugs --n_samples 10_000```
+### 2. run scripts
 
-Sample
+Run Python scripts within the managed virtual environment:
 
-```python eval_sample.py --model_path outputs/edm_geom_drugs```
+```bash
+uv run python your_script.py
+```
 
+or first activate the environment
 
-Small note: The GPUs we used for these experiment were pretty large. If the memory does not fit, try running at a smaller size. The main reason is that the EGNN runs with fully connected message passing, which becomes very memory intensive.
+```bash
+source .venv/bin/activate
+```
 
-### For Conditional Generation
+and then execute your file
 
-#### Train a Conditional EDM
+```bash
+uv run python your_script.py
+```
 
-```python main_qm9.py --exp_name exp_cond_alpha  --model egnn_dynamics --lr 1e-4  --nf 192 --n_layers 9 --save_model True --diffusion_steps 1000 --sin_embedding False --n_epochs 3000 --n_stability_samples 500 --diffusion_noise_schedule polynomial_2 --diffusion_noise_precision 1e-5 --dequantization deterministic --include_charges False --diffusion_loss_type l2 --batch_size 64 --normalize_factors [1,8,1] --conditioning alpha --dataset qm9_second_half```
+### 3. Add Dependencies
 
-The argument `--conditioning alpha` can be set to any of the following properties: `alpha`, `gap`, `homo`, `lumo`, `mu` `Cv`. The same applies to the following commands that also depend on alpha.
+Add new Packages with
 
-#### Generate samples for different property values
+```bash
+uv add [package]
+```
 
-```python eval_conditional_qm9.py --generators_path outputs/exp_cond_alpha --property alpha --n_sweeps 10 --task qualitative```
+(this adds the package to `pyproject.toml` and `uv.lock`)
 
-You can set `--generators_path` arguments to `outputs/exp_35_conditional_nf192_9l_alpha` to use our pre-trained model on alpha.
+#### (optional) 4. Syncing after Pulling Changes
 
+If someone else adds packages and you pull the changes, just run:
 
-#### Train a property classifier network 
-```cd qm9/property_prediction```  
-```python main_qm9_prop.py --num_workers 2 --lr 5e-4 --property alpha --exp_name exp_class_alpha --model_name egnn```
+```bash
+uv sync
+```
 
-Additionally, you can change the argument `--model_name egnn` by `--model_name numnodes` to train a classifier baseline that classifies only based on the number of nodes.
+It will install the correct versions based on the lockfile.
 
-#### Evaluate the property classifier on EDM
-Evaluate the trained property classifier on the samples generated by the trained EDM model
+## Custom code Explanation
 
-```python eval_conditional_qm9.py --generators_path outputs/exp_cond_alpha --classifiers_path qm9/property_prediction/outputs/exp_class_alpha --property alpha  --iterations 100  --batch_size 100 --task edm```
+For now i put all custom code into the [my_ext](./src/geoldm/my_ext/) folder.
+Here i implemented:
 
-To use a pre-trained generator and classifier model for alpha you can use the following arguments: `--generators_path outputs/exp_35_conditional_nf192_9l_alpha` and `--classifiers_path qm9/property_prediction/outputs/exp_class_alpha_pretrained`
+- a crossdock dataloader
+- an execution [script](./src/geoldm/my_ext/main_crossdock.py) that wraps around the qm9 script to run training with my args.
 
+so you can according to [2. run scripts]() execute this file with
 
+```bash
+uv run src/geoldm/my_ext/main_crossdock.py
+```
+
+### Dataset
+
+We plan to train using the same data sets as [Pocket2Mol](https://github.com/pengxingang/Pocket2Mol) and [SBDD](https://github.com/luost26/3D-Generative-SBDD) model.
+
+1. Download the dataset archive `crossdocked_pocket10.tar.gz` and the split file `split_by_name.pt` from [this link](https://drive.google.com/drive/folders/1CzwxmTpjbrt83z_wBzcQncq84OVDPurM).
+2. Extract the TAR archive using the command: `tar -xzvf crossdocked_pocket10.tar.gz`.
+
+select only a subset of folders and create a small training dataset.

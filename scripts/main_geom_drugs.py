@@ -3,10 +3,9 @@ try:
     from rdkit import Chem
 except ModuleNotFoundError:
     pass
-import build_geom_dataset
+from scripts import build_geom_dataset, train_test, utils
 from src.e3_diffusion.configs.datasets_config import geom_with_h
 import copy
-import utils
 import argparse
 import wandb
 from os.path import join
@@ -18,8 +17,6 @@ import time
 import pickle
 
 from src.e3_diffusion.qm9 import prepare_context, compute_mean_mad
-import train_test
-
 
 parser = argparse.ArgumentParser(description='e3_diffusion')
 parser.add_argument('--exp_name', type=str, default='debug_10')

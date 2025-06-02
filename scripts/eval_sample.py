@@ -13,8 +13,8 @@ from src.e3_diffusion.qm9.models import get_model
 from src.e3_diffusion.equivariant_diffusion.utils import assert_correctly_masked
 import torch
 import pickle
-from src.e3_diffusion import qm9 as vis
-from src.e3_diffusion.qm9 import check_stability
+import src.e3_diffusion.qm9.visualizer as vis
+from src.e3_diffusion.qm9.sampling import check_stability
 from os.path import join
 from src.e3_diffusion.qm9.sampling import sample_chain, sample
 from src.e3_diffusion.configs.datasets_config import get_dataset_info
@@ -122,7 +122,10 @@ def sample_only_stable_different_sizes_and_save(
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--model_path", type=str, default="outputs/edm_1", help="Specify model path"
+        "--model_path",
+        type=str,
+        default="src/e3_diffusion/outputs/edm_qm9",
+        help="Specify model path",
     )
     parser.add_argument(
         "--n_tries",

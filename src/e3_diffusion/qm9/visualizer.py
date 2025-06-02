@@ -9,7 +9,7 @@ import imageio
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from qm9 import bond_analyze
+from src.e3_diffusion.qm9 import bond_analyze
 ##############
 ### Files ####
 ###########-->
@@ -395,7 +395,7 @@ def visualize_chain_uncertainty(
 
 if __name__ == '__main__':
     #plot_grid()
-    import qm9.dataset as dataset
+    from src.e3_diffusion import qm9 as dataset
     from src.e3_diffusion.configs.datasets_config import qm9_with_h, geom_with_h
     matplotlib.use('macosx')
 
