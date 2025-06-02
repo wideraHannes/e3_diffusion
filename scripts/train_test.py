@@ -1,13 +1,12 @@
 import wandb
-from equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
+from src.e3_diffusion.equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
     assert_correctly_masked, sample_center_gravity_zero_gaussian_with_mask
 import numpy as np
-import qm9.visualizer as vis
-from qm9.analyze import analyze_stability_for_molecules
-from qm9.sampling import sample_chain, sample, sample_sweep_conditional
+from src.e3_diffusion import qm9 as vis
+from src.e3_diffusion.qm9 import analyze_stability_for_molecules, losses
+from src.e3_diffusion.qm9.sampling import sample_chain, sample, sample_sweep_conditional
 import utils
-import qm9.utils as qm9utils
-from qm9 import losses
+import src.e3_diffusion.qm9.utils as qm9utils
 import time
 import torch
 
@@ -83,8 +82,8 @@ def train_epoch(args, loader, epoch, model, model_dp, model_ema, ema, device, dt
                                             prop_dist, epoch=epoch)
             print(f'Sampling took {time.time() - start:.2f} seconds')
 
-            vis.visualize(f"outputs/{args.exp_name}/epoch_{epoch}_{i}", dataset_info=dataset_info, wandb=wandb)
-            vis.visualize_chain(f"outputs/{args.exp_name}/epoch_{epoch}_{i}/chain/", dataset_info, wandb=wandb)
+            vis.visualize(f"src/e3_diffusion/outputs/{args.exp_name}/epoch_{epoch}_{i}", dataset_info=dataset_info, wandb=wandb)
+            vis.visualize_chain(f"src/e3_diffusion/outputs/{args.exp_name}/epoch_{epoch}_{i}/chain/", dataset_info, wandb=wandb)
             if len(args.conditioning) > 0:
                 vis.visualize_chain("outputs/%s/epoch_%d/conditional/" % (args.exp_name, epoch), dataset_info,
                                     wandb=wandb, mode='conditional')
@@ -154,7 +153,7 @@ def save_and_sample_chain(model, args, device, dataset_info, prop_dist,
     one_hot, charges, x = sample_chain(args=args, device=device, flow=model,
                                        n_tries=1, dataset_info=dataset_info, prop_dist=prop_dist)
 
-    vis.save_xyz_file(f'outputs/{args.exp_name}/epoch_{epoch}_{batch_id}/chain/',
+    vis.save_xyz_file(f'src/e3_diffusion/outputs/{args.exp_name}/epoch_{epoch}_{batch_id}/chain/',
                       one_hot, charges, x, dataset_info, id_from, name='chain')
 
     return one_hot, charges, x
@@ -169,7 +168,7 @@ def sample_different_sizes_and_save(model, nodes_dist, args, device, dataset_inf
                                                 nodesxsample=nodesxsample,
                                                 dataset_info=dataset_info)
         print(f"Generated molecule: Positions {x[:-1, :, :]}")
-        vis.save_xyz_file(f'outputs/{args.exp_name}/epoch_{epoch}_{batch_id}/', one_hot, charges, x, dataset_info,
+        vis.save_xyz_file(f'src/e3_diffusion/outputs/{args.exp_name}/epoch_{epoch}_{batch_id}/', one_hot, charges, x, dataset_info,
                           batch_size * counter, name='molecule')
 
 

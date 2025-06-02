@@ -12,9 +12,9 @@ from tqdm import tqdm
 from IPython.display import display
 from matplotlib import pyplot as plt
 import numpy as np
-from qm9.analyze import check_stability
-from qm9.rdkit_functions import BasicMolecularMetrics
-import configs.datasets_config
+from src.e3_diffusion.qm9 import check_stability
+from src.e3_diffusion.qm9.rdkit_functions import BasicMolecularMetrics
+import src.e3_diffusion.configs.datasets_config
 atomic_number_list = [1, 5, 6, 7, 8, 9, 13, 14, 15, 16, 17, 33, 35, 53, 80, 83]
 inverse = {1: 0, 5: 1, 6: 2, 7: 3, 8: 4, 9: 5, 13: 6, 14: 7, 15: 8, 16: 9, 17: 10, 33: 11, 35: 12, 53: 13,
            80: 14, 83: 15}
@@ -145,8 +145,8 @@ def create_histograms(args):
 
 
 def analyse_geom_stability():
-    data_file = './data/geom/geom_drugs_30.npy'
-    dataset_info = configs.datasets_config.get_dataset_info('geom', remove_h=False)
+    data_file = 'src/e3_diffusion/data/geom/geom_drugs_30.npy'
+    dataset_info = src.e3_diffusion.configs.datasets_config.get_dataset_info('geom', remove_h=False)
     atom_dict = dataset_info['atom_decoder']
     bond_dict = [None, Chem.rdchem.BondType.SINGLE, Chem.rdchem.BondType.DOUBLE, Chem.rdchem.BondType.TRIPLE,
                  Chem.rdchem.BondType.AROMATIC]
@@ -193,8 +193,8 @@ def analyse_geom_stability():
 
 
 def debug_geom_stability(num_atoms=100000):
-    data_file = './data/geom/geom_drugs_30.npy'
-    dataset_info = configs.datasets_config.get_dataset_info('geom', remove_h=False)
+    data_file = 'src/e3_diffusion/data/geom/geom_drugs_30.npy'
+    dataset_info = src.e3_diffusion.configs.datasets_config.get_dataset_info('geom', remove_h=False)
     atom_dict = dataset_info['atom_decoder']
     bond_dict = [None, Chem.rdchem.BondType.SINGLE, Chem.rdchem.BondType.DOUBLE, Chem.rdchem.BondType.TRIPLE,
                  Chem.rdchem.BondType.AROMATIC]

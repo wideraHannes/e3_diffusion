@@ -2,15 +2,14 @@ import argparse
 from os.path import join
 import torch
 import pickle
-from qm9.models import get_model
-from configs.datasets_config import get_dataset_info
-from qm9 import dataset
-from qm9.utils import compute_mean_mad
-from qm9.sampling import sample
-from qm9.property_prediction.main_qm9_prop import test
-from qm9.property_prediction import main_qm9_prop
-from qm9.sampling import sample_chain, sample, sample_sweep_conditional
-import qm9.visualizer as vis
+from src.e3_diffusion.qm9.models import get_model, dataset
+from src.e3_diffusion.configs.datasets_config import get_dataset_info
+from src.e3_diffusion.qm9 import compute_mean_mad
+from src.e3_diffusion.qm9.sampling import sample
+from src.e3_diffusion.qm9.property_prediction.main_qm9_prop import test
+from src.e3_diffusion.qm9.property_prediction import main_qm9_prop
+from src.e3_diffusion.qm9.sampling import sample_chain, sample, sample_sweep_conditional
+from src.e3_diffusion import qm9 as vis
 
 
 def get_classifier(dir_path='', device='cpu'):

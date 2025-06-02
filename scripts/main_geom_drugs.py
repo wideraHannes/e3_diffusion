@@ -4,21 +4,20 @@ try:
 except ModuleNotFoundError:
     pass
 import build_geom_dataset
-from configs.datasets_config import geom_with_h
+from src.e3_diffusion.configs.datasets_config import geom_with_h
 import copy
 import utils
 import argparse
 import wandb
 from os.path import join
-from qm9.models import get_optim, get_model
-from equivariant_diffusion import en_diffusion
+from src.e3_diffusion.qm9.models import get_optim, get_model
+from src.e3_diffusion.equivariant_diffusion import en_diffusion, utils as diffusion_utils
 
-from equivariant_diffusion import utils as diffusion_utils
 import torch
 import time
 import pickle
 
-from qm9.utils import prepare_context, compute_mean_mad
+from src.e3_diffusion.qm9 import prepare_context, compute_mean_mad
 import train_test
 
 
@@ -115,7 +114,7 @@ parser.add_argument('--sequential', action='store_true',
                     help='Organize data by size to reduce average memory usage.')
 args = parser.parse_args()
 
-data_file = './data/geom/geom_drugs_30.npy'
+data_file = 'src/e3_diffusion/data/geom/geom_drugs_30.npy'
 
 if args.remove_h:
     raise NotImplementedError()

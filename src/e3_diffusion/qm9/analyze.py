@@ -260,7 +260,7 @@ def process_loader(dataloader):
 
 
 def main_check_stability(remove_h: bool, batch_size=32):
-    from configs import datasets_config
+    from src.e3_diffusion.configs import datasets_config
     import qm9.dataset as dataset
 
     class Config:

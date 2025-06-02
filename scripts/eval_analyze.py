@@ -5,24 +5,23 @@ except ModuleNotFoundError:
     pass
 import utils
 import argparse
-from qm9 import dataset
-from qm9.models import get_model
+from src.e3_diffusion.qm9 import dataset, rdkit_functions, visualizer as qm9_visualizer
+from src.e3_diffusion.qm9.models import get_model
 import os
-from equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
+from src.e3_diffusion.equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
     assert_correctly_masked
 import torch
 import time
 import pickle
-from configs.datasets_config import get_dataset_info
+from src.e3_diffusion.configs.datasets_config import get_dataset_info
 from os.path import join
-from qm9.sampling import sample
-from qm9.analyze import analyze_stability_for_molecules, analyze_node_distribution
-from qm9.utils import prepare_context, compute_mean_mad
-from qm9 import visualizer as qm9_visualizer
-import qm9.losses as losses
+from src.e3_diffusion.qm9.sampling import sample
+from src.e3_diffusion.qm9 import analyze_stability_for_molecules, analyze_node_distribution
+from src.e3_diffusion.qm9 import prepare_context, compute_mean_mad
+from src.e3_diffusion import qm9 as losses
 
 try:
-    from qm9 import rdkit_functions
+    pass
 except ModuleNotFoundError:
     print('Not importing rdkit functions.')
 

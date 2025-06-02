@@ -37,7 +37,7 @@ def retrieve_dataloaders(cfg):
                              for split, dataset in datasets.items()}
     elif 'geom' in cfg.dataset:
         import build_geom_dataset
-        from configs.datasets_config import get_dataset_info
+        from src.e3_diffusion.configs.datasets_config import get_dataset_info
         data_file = './data/geom/geom_drugs_30.npy'
         dataset_info = get_dataset_info(cfg.dataset, cfg.remove_h)
 

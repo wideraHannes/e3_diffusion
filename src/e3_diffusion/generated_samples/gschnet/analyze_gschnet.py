@@ -35,7 +35,7 @@ def main():
     with open('generated_samples/gschnet/gschnet_samples.pickle', 'rb') as f:
         samples = pickle.load(f)
 
-    from configs import datasets_config
+    from src.e3_diffusion.configs import datasets_config
 
     dataset_info = {'atom_decoder': [None, 'H', None, None, None,
                                      None, 'C', 'N', 'O', 'F'],
